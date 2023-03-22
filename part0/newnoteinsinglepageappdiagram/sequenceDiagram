@@ -1,0 +1,12 @@
+```mermaid
+sequenceDiagram
+    participant browser
+    participant server
+
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+    activate server
+    server-->>browser: HTTP status code 201
+    deactivate server
+    Note right of browser: The already loaded JS code prevents a normal POST. It will locally update the note list and then POST the new note to the server. <br> The server then respondes with a 201, since there is no need to reload the page.
+
+```
