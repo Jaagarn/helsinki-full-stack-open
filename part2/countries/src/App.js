@@ -1,14 +1,19 @@
 import { useState } from "react";
 
 import countryService from "./services/countries";
+import weatherCityService from "./services/weatherCity";
+
 import Filter from "./components/Filter";
 import Notification from "./components/Notification";
 import CountryView from "./components/CountryView";
+import WeatherDisplay from "./components/WeatherDisplay";
 
 const App = () => {
   const [countries, setCountries] = useState([]);
   const [countryView, setCountryView] = useState(null);
   const [countryViewVisable, setCountryViewVisable] = useState(false);
+  const [weatherObject, setWeatherObject] = useState(null);
+  const [weatherCityVisable, setWeatherCityVisable] = useState(false);
   const [filter, setFilter] = useState("");
   const [notificationMessage, setNotificationMessage] = useState(null);
 
@@ -17,6 +22,8 @@ const App = () => {
     setFilter(newFilter);
     setCountryViewVisable(false);
     setCountryView(null);
+    setWeatherCityVisable(false);
+    setWeatherObject(null);
 
     if (newFilter.length <= 1) {
       setNotificationMessage(`Please use more than 1 letter`);
@@ -37,8 +44,16 @@ const App = () => {
             }, 5000);
           } else if (allCountries.length === 1){
             setCountryViewVisable(true);
-            setCountries([]);
             setCountryView(allCountries[0]);
+            setCountries([]);
+
+            weatherCityService
+              .getByCity(allCountries[0].capital.valueOf())
+              .then((weatherObject) => {
+                setWeatherCityVisable(true);
+                setWeatherObject(weatherObject);
+                console.log(weatherObject)
+              })
           } else {
             setCountries(allCountries);
           }
@@ -54,6 +69,13 @@ const App = () => {
     const country = countries.filter((country) => country.ccn3.valueOf() === countryId)[0];
     setCountryViewVisable(true);
     setCountryView(country);
+    weatherCityService
+              .getByCity(country.capital.valueOf())
+              .then((weatherObject) => {
+                setWeatherCityVisable(true);
+                setWeatherObject(weatherObject);
+                console.log(weatherObject)
+              })
   };
 
   return (
@@ -67,6 +89,7 @@ const App = () => {
         country={countryView} 
         visable={countryViewVisable} 
         handleOnShowClick={handleOnShowClick} />
+        <WeatherDisplay weatherObject={weatherObject} visable={weatherCityVisable} />
     </div>
   );
 };
