@@ -36,13 +36,13 @@ const App = () => {
       countryService
         .getByName(newFilter)
         .then((allCountries) => {
-          if(allCountries.length > 10) {
+          if (allCountries.length > 10) {
             setNotificationMessage(`More than 10 results, please specify`);
             setCountries([]);
             setTimeout(() => {
               setNotificationMessage(null);
             }, 5000);
-          } else if (allCountries.length === 1){
+          } else if (allCountries.length === 1) {
             setCountryViewVisable(true);
             setCountryView(allCountries[0]);
             setCountries([]);
@@ -52,8 +52,7 @@ const App = () => {
               .then((weatherObject) => {
                 setWeatherCityVisable(true);
                 setWeatherObject(weatherObject);
-                console.log(weatherObject)
-              })
+              });
           } else {
             setCountries(allCountries);
           }
@@ -66,16 +65,16 @@ const App = () => {
   };
 
   const handleOnShowClick = (countryId) => {
-    const country = countries.filter((country) => country.ccn3.valueOf() === countryId)[0];
+    const country = countries.filter(
+      (country) => country.ccn3.valueOf() === countryId)[0];
     setCountryViewVisable(true);
     setCountryView(country);
     weatherCityService
-              .getByCity(country.capital.valueOf())
-              .then((weatherObject) => {
-                setWeatherCityVisable(true);
-                setWeatherObject(weatherObject);
-                console.log(weatherObject)
-              })
+      .getByCity(country.capital.valueOf())
+      .then((weatherObject) => {
+        setWeatherCityVisable(true);
+        setWeatherObject(weatherObject);
+      });
   };
 
   return (
@@ -83,13 +82,23 @@ const App = () => {
       <Filter filter={filter} handleOnChangedFilter={handleOnChangedFilter} />
       <Notification message={notificationMessage} />
       {countries.map((country) => (
-          <p key={country.ccn3}>{country.name.common} <button onClick={() => handleOnShowClick(country.ccn3.valueOf())}> show </button></p>
+        <p key={country.ccn3}>
+          {country.name.common}{" "}
+          <button onClick={() => handleOnShowClick(country.ccn3.valueOf())}>
+            {" "}
+            show{" "}
+          </button>
+        </p>
       ))}
-      <CountryView 
-        country={countryView} 
-        visable={countryViewVisable} 
-        handleOnShowClick={handleOnShowClick} />
-        <WeatherDisplay weatherObject={weatherObject} visable={weatherCityVisable} />
+      <CountryView
+        country={countryView}
+        visable={countryViewVisable}
+        handleOnShowClick={handleOnShowClick}
+      />
+      <WeatherDisplay
+        weatherObject={weatherObject}
+        visable={weatherCityVisable}
+      />
     </div>
   );
 };
