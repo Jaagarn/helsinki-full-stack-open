@@ -10,6 +10,6 @@ const getAll = () => {
 const getByName = (name) => {
   const request = axios.get(`${baseUrl}/v3.1/name/${name}`);
   return request.then((response) => response.data);
-}
+};
 
-export default {getAll, getByName};
+export default { getAll, getByName };
