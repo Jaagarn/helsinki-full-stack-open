@@ -43,11 +43,17 @@ const App = () => {
             setCountries(allCountries);
           }
         })
-        .catch((error) => {
-          setNotificationMessage(error.message);
+        .catch(() => {
+          setNotificationMessage("No countries containing the search filter");
           setCountries([]);
         });
     }
+  };
+
+  const handleOnShowClick = (countryId) => {
+    const country = countries.filter((country) => country.ccn3.valueOf() === countryId)[0];
+    setCountryViewVisable(true);
+    setCountryView(country);
   };
 
   return (
@@ -55,9 +61,12 @@ const App = () => {
       <Filter filter={filter} handleOnChangedFilter={handleOnChangedFilter} />
       <Notification message={notificationMessage} />
       {countries.map((country) => (
-        <p key={country.ccn3}>{country.name.common}</p>
+          <p key={country.ccn3}>{country.name.common} <button onClick={() => handleOnShowClick(country.ccn3.valueOf())}> show </button></p>
       ))}
-      <CountryView country={countryView} visable={countryViewVisable} />
+      <CountryView 
+        country={countryView} 
+        visable={countryViewVisable} 
+        handleOnShowClick={handleOnShowClick} />
     </div>
   );
 };

@@ -1,4 +1,5 @@
 const CountryView = ({ country, visable }) => {
+  console.log(country)
   if (visable) {
     return (
       <>
