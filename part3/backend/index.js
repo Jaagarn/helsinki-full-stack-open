@@ -1,7 +1,10 @@
 const express = require("express");
+var morgan = require("morgan");
 
 const app = express();
+
 app.use(express.json());
+app.use(morgan("tiny"));
 
 let persons = [
   {
@@ -30,6 +33,12 @@ const generateId = () => {
   // Math.floor is maybe not a great solution, but it should work here. It's random enough
   return Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
 };
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: "unknown endpoint" });
+};
+
+app.use(unknownEndpoint);
 
 app.get("/", (request, response) => {
   response.send("<h1>Hello World!</h1>");
