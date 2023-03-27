@@ -4,7 +4,11 @@ var morgan = require("morgan");
 const app = express();
 
 app.use(express.json());
-app.use(morgan("tiny"));
+
+morgan.token("body", (req, res) => JSON.stringify(req.body));
+app.use(
+  morgan(":method :url :status :res[content-length] - :response-time ms :body")
+);
 
 let persons = [
   {
@@ -33,12 +37,6 @@ const generateId = () => {
   // Math.floor is maybe not a great solution, but it should work here. It's random enough
   return Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
 };
-
-const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: "unknown endpoint" });
-};
-
-app.use(unknownEndpoint);
 
 app.get("/", (request, response) => {
   response.send("<h1>Hello World!</h1>");
@@ -94,6 +92,10 @@ app.post("/api/persons", (request, response) => {
   };
 
   persons = persons.concat(person);
+
+  response
+    .status(201)
+    .json({ id: person.id, name: person.name, number: person.number });
 });
 
 app.delete("/api/persons/:id", (request, response) => {
@@ -102,6 +104,12 @@ app.delete("/api/persons/:id", (request, response) => {
 
   response.status(204).end();
 });
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: "unknown endpoint" });
+};
+
+app.use(unknownEndpoint);
 
 const PORT = 3001;
 app.listen(PORT, () => {
