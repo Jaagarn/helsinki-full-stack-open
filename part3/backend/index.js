@@ -85,9 +85,6 @@ app.post("/api/persons", (request, response) => {
   };
 
   persons = persons.concat(person);
-
-  console.log(person);
-  response.json(person);
 });
 
 app.delete("/api/persons/:id", (request, response) => {
