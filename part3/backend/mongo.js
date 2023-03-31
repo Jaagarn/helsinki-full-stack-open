@@ -45,7 +45,3 @@ if (process.argv.length > 3) {
       mongoose.connection.close();
   });
 }
-
-
-
-
