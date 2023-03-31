@@ -87,9 +87,7 @@ const App = () => {
         }, 5000);
       })
       .catch((error) => {
-        setErrorMessage(
-          `Error from database:\n ${error.response.data.error}`
-        );
+        setErrorMessage(`Error from database:\n ${error.response.data.error}`);
         setTimeout(() => {
           setErrorMessage(null);
         }, 10000);

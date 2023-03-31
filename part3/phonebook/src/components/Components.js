@@ -20,10 +20,9 @@ export const PersonForm = ({
     <>
       <form onSubmit={addPerson}>
         <div>
-          name:{" "}
-          <input value={newName} onChange={handleOnChangedNewName} />
+          name: <input value={newName} onChange={handleOnChangedNewName} />
         </div>
-        <div style={{ marginTop: 10 }} >
+        <div style={{ marginTop: 10 }}>
           number:{" "}
           <input value={newNumber} onChange={handleOnChangedNewNumber} />
         </div>
@@ -40,7 +39,12 @@ const Person = ({ person, handleOnDeletePersonClick }) => {
     <>
       <p>
         {person.name} {person.number}
-        <button style={{ marginLeft: 10 }} onClick={(() => handleOnDeletePersonClick(person.id))}>delete</button>
+        <button
+          style={{ marginLeft: 10 }}
+          onClick={() => handleOnDeletePersonClick(person.id)}
+        >
+          delete
+        </button>
       </p>
     </>
   );
@@ -52,10 +56,11 @@ export const Persons = ({ persons, filter, handleOnDeletePersonClick }) => {
       {persons
         .filter((person) => person.name.toLowerCase().includes(filter))
         .map((person) => (
-          <Person 
-            key={person.id} 
-            person={person} 
-            handleOnDeletePersonClick={handleOnDeletePersonClick} />
+          <Person
+            key={person.id}
+            person={person}
+            handleOnDeletePersonClick={handleOnDeletePersonClick}
+          />
         ))}
     </>
   );
