@@ -13,11 +13,9 @@ const App = () => {
   const [notificationMessage, setNotificationMessage] = useState(null);
 
   const hook = () => {
-    personService
-      .getAll()
-      .then((intitalPeople) => {
-        setPersons(intitalPeople);
-      });
+    personService.getAll().then((intitalPeople) => {
+      setPersons(intitalPeople);
+    });
   };
 
   useEffect(hook, []);
@@ -50,7 +48,6 @@ const App = () => {
         personService
           .updatePersonByObject(updatedPersonObject)
           .then((updatedPerson) => {
-
             const updatedNewPersons = newPersons.map((newPerson) =>
               newPerson.id === updatedPerson.id ? updatedPerson : newPerson
             );
@@ -60,10 +57,10 @@ const App = () => {
             setNewNumber("");
             setNotificationMessage(
               `'${updatedPerson.name}' has new number ${updatedPerson.number}`
-            )
+            );
             setTimeout(() => {
-              setNotificationMessage(null)
-            }, 5000)
+              setNotificationMessage(null);
+            }, 5000);
           });
       }
 
@@ -84,12 +81,18 @@ const App = () => {
         setPersons(newPersons.concat(returnedPerson));
         setNewName("");
         setNewNumber("");
-        setNotificationMessage(
-          `'${returnedPerson.name}' was added`
-        )
+        setNotificationMessage(`'${returnedPerson.name}' was added`);
         setTimeout(() => {
-          setNotificationMessage(null)
-        }, 5000)
+          setNotificationMessage(null);
+        }, 5000);
+      })
+      .catch((error) => {
+        setErrorMessage(
+          `Error from database:\n ${error.response.data.error}`
+        );
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 10000);
       });
   };
 
@@ -108,14 +111,14 @@ const App = () => {
         .catch(() => {
           setErrorMessage(
             `'${personToDelete}' was already removed from server`
-          )
+          );
           setTimeout(() => {
-            setErrorMessage(null)
-          }, 5000)
-          setPersons(persons.filter(n => n.id !== id));
+            setErrorMessage(null);
+          }, 5000);
+          setPersons(persons.filter((n) => n.id !== id));
         })
         .then(() => {
-          setPersons(persons.filter(n => n.id !== id));
+          setPersons(persons.filter((n) => n.id !== id));
         });
     }
   };
@@ -137,8 +140,8 @@ const App = () => {
       <h1>Phonebook</h1>
       <Filter filter={filter} handleOnChangedFilter={handleOnChangedFilter} />
       <h2>add a new</h2>
-      <Notification className='error' message={errorMessage} />
-      <Notification className='notification' message={notificationMessage} />
+      <Notification className="error" message={errorMessage} />
+      <Notification className="notification" message={notificationMessage} />
       <PersonForm
         addPerson={addPerson}
         newName={newName}
