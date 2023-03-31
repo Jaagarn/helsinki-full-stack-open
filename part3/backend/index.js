@@ -1,4 +1,4 @@
-require('dotenv').config()
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 var morgan = require("morgan");
@@ -61,48 +61,35 @@ app.get("/api/persons", (request, response) => {
 });
 
 app.get("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-  const person = persons.find((person) => person.id === id);
-
-  if (person) {
-    response.json(person);
-  } else {
-    response.statusMessage = "Person not found";
-    response.status(404).end();
-  }
+  Person.findById(request.params.id)
+    .then((person) => {
+      if (person) {
+        response.json(person);
+      } else {
+        response.status(404).end();
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      response.status(400).send({ error: "malformatted id" });
+    });
 });
 
 app.post("/api/persons", (request, response) => {
   const body = request.body;
 
-  if (!body.name || !body.number) {
-    return response.status(400).json({
-      error: "Name and/or number missing",
-    });
+  if (body.name === undefined) {
+    return response.status(400).json({ error: "name missing" });
   }
 
-  const personAlreadyAdded = persons.find(
-    (person) => person.name === body.name
-  );
-
-  if (personAlreadyAdded) {
-    return response.status(400).json({
-      error: "Person already added",
-    });
-  }
-
-  // I should check if the id already exists, but the likelihood of that is so small that I ignore it
-  const person = {
-    id: generateId(),
+  const person = new Person({
     name: body.name,
     number: body.number,
-  };
+  });
 
-  persons = persons.concat(person);
-
-  response
-    .status(201)
-    .json({ id: person.id, name: person.name, number: person.number });
+  person.save().then((savedPerson) => {
+    response.json(savedPerson);
+  });
 });
 
 app.delete("/api/persons/:id", (request, response) => {
