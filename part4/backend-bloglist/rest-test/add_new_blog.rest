@@ -1,0 +1,12 @@
+POST http://localhost:3003/api/blogs
+Content-Type:  application/json
+
+{
+
+    "title": "Blog on the web",
+    "author": "Blog McMaker",
+    "url": "https://www.blogmacmaker.xyz/",
+    "likes": 123
+    
+
+}
