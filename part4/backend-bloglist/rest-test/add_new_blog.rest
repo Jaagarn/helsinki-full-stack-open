@@ -3,10 +3,10 @@ Content-Type:  application/json
 
 {
 
-    "title": "Blog on the web",
+    "title": "Blog on the web - part2",
     "author": "Blog McMaker",
-    "url": "https://www.blogmacmaker.xyz/",
-    "likes": 123
+    "url": "https://www.blogmacmaker2.xyz/",
+    "likes": 321
     
 
 }

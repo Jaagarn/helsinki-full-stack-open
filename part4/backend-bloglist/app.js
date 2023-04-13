@@ -1,61 +1,33 @@
 const express = require("express");
-const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
-require("dotenv").config();
+const app = express();
+const blogsRouter = require("./controllers/blogs");
+const middleware = require("./utils/middleware");
+const logger = require("./utils/logger");
+const config = require("./utils/config");
 
-const blogSchema = new mongoose.Schema({
-  title: String,
-  author: String,
-  url: String,
-  likes: Number,
-});
+mongoose.set("strictQuery", false);
 
-blogSchema.set("toJSON", {
-  transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString();
-    delete returnedObject._id;
-    delete returnedObject.__v;
-  },
-});
-
-const Blog = mongoose.model("Blog", blogSchema);
-
-const mongodb_uri = process.env.MONGODB_URI;
-
-console.log("connecting to", mongodb_uri);
+logger.info("Connecting to: ", config.MONGODB_URI);
 
 mongoose
-  .connect(mongodb_uri)
+  .connect(config.MONGODB_URI)
   .then((result) => {
-    console.log("connected to MongoDB");
+    logger.info("Connected to MongoDB!");
   })
   .catch((error) => {
-    console.log("error connecting to MongoDB:", error.message);
+    logger.error("Error connecting to MongoDB: ", error.message);
   });
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static('build'))
+app.use(middleware.requestLogger)
 
-app.get("/api/blogs", (request, response) => {
-  Blog.find({}).then((blogs) => {
-    response.json(blogs);
-  });
-});
+app.use('/api/blogs', blogsRouter)
 
-app.post("/api/blogs", (request, response) => {
-  const body = request.body;
-
-  const blog = new Blog({
-    title: body.title,
-    author: body.author,
-    url: body.url,
-    likes: body.likes,
-  });
-
-  blog.save().then((result) => {
-    response.status(201).json(result);
-  });
-});
+app.use(middleware.unknownEndpoint)
+app.use(middleware.errorHandler)
 
 module.exports = app;
