@@ -7,7 +7,6 @@ const morganInstance = morgan(
 );
 
 const requestLogger = async (request, response, next) => {
-  
   morganInstance(request, response, function (err) {
     return next();
   });
