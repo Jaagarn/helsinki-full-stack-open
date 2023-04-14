@@ -141,6 +141,35 @@ describe("post tests", () => {
   });
 });
 
+describe("put tests", () => {
+  test("an existing blog can be updated", async () => {
+    const getResponeSetup = await api
+      .get("/api/blogs")
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+
+    const existingBlog = getResponeSetup.body.find(
+      (r) => r.title === "Blog 1 test title"
+    );
+
+    const updatedBlog = {
+      title: "Blog 1 test title",
+      author: "Blog 1 test author",
+      url: "www.blog1testsite.xyz",
+      likes: 7,
+    };
+
+    const putResponse = await api
+      .put(`/api/blogs/${existingBlog.id}`)
+      .send(updatedBlog)
+      .expect("Content-Type", /application\/json/);
+
+    expect(putResponse.body.id).toBe(existingBlog.id);
+    expect(putResponse.body.title).toBe(existingBlog.title);
+    expect(putResponse.body.likes).toBe(updatedBlog.likes);
+  });
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
 });
