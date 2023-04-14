@@ -143,10 +143,7 @@ describe("post tests", () => {
 
 describe("put tests", () => {
   test("an existing blog can be updated", async () => {
-    const getResponeSetup = await api
-      .get("/api/blogs")
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
+    const getResponeSetup = await api.get("/api/blogs");
 
     const existingBlog = getResponeSetup.body.find(
       (r) => r.title === "Blog 1 test title"
@@ -167,6 +164,25 @@ describe("put tests", () => {
     expect(putResponse.body.id).toBe(existingBlog.id);
     expect(putResponse.body.title).toBe(existingBlog.title);
     expect(putResponse.body.likes).toBe(updatedBlog.likes);
+  });
+});
+
+describe("delete tests", () => {
+  test("an existing blog can be deleted", async () => {
+    const getResponeSetup = await api.get("/api/blogs");
+
+    const existingBlog = getResponeSetup.body.find(
+      (r) => r.title === "Blog 1 test title"
+    );
+
+    await api.delete(`/api/blogs/${existingBlog.id}`).expect(204);
+
+    const getResponeVerification = await api.get("/api/blogs");
+
+    const ids = getResponeVerification.body.map((r) => r.id);
+
+    expect(ids).not.toContain(existingBlog.id);
+    expect(getResponeVerification.body).toHaveLength(initialBlogs.length - 1);
   });
 });
 
