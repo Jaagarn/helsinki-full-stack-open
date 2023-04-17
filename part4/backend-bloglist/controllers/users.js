@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const usersRouter = require("express").Router();
 const User = require("../models/user");
+const middleware = require("../utils/middleware");
 
 usersRouter.get("/", async (request, response) => {
   const users = await User.find({});
@@ -9,6 +10,14 @@ usersRouter.get("/", async (request, response) => {
 
 usersRouter.post("/", async (request, response) => {
   const { username, name, password } = request.body;
+
+  if (password.length < 3) {
+    middleware.errorHandler({
+      name: "ValidationError",
+      message: "Password is too short (must be more than 3 chars)",
+    }, request, response);
+    return;
+  }
 
   const saltRounds = 10;
   const passwordHash = await bcrypt.hash(password, saltRounds);
@@ -19,9 +28,12 @@ usersRouter.post("/", async (request, response) => {
     passwordHash,
   });
 
-  const savedUser = await user.save();
-
-  response.status(201).json(savedUser);
+  try {
+    const savedUser = await user.save();
+    response.status(201).json(savedUser);
+  } catch (error) {
+    middleware.errorHandler(error, request, response);
+  }
 });
 
 usersRouter.put("/:id", async (request, response, next) => {
@@ -42,7 +54,7 @@ usersRouter.put("/:id", async (request, response, next) => {
     );
     response.json(updatedUser);
   } catch (error) {
-    next(error);
+    middleware.errorHandler(error, request, response);
   }
 });
 
@@ -51,7 +63,7 @@ usersRouter.delete("/:id", async (request, response, next) => {
     await User.findByIdAndRemove(request.params.id);
     response.status(204).end();
   } catch (error) {
-    next(error);
+    middleware.errorHandler(error, request, response);
   }
 });
 
