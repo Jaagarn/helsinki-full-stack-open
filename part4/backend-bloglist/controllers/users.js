@@ -4,18 +4,26 @@ const User = require("../models/user");
 const middleware = require("../utils/middleware");
 
 usersRouter.get("/", async (request, response) => {
-  const users = await User.find({});
-  response.json(users);
+  try {
+    const users = await User.find({}).populate("blogs");
+    response.json(users);
+  } catch (error) {
+    middleware.errorHandler(error, request, response);
+  }
 });
 
 usersRouter.post("/", async (request, response) => {
   const { username, name, password } = request.body;
 
   if (password.length < 3) {
-    middleware.errorHandler({
-      name: "ValidationError",
-      message: "Password is too short (must be more than 3 chars)",
-    }, request, response);
+    middleware.errorHandler(
+      {
+        name: "ValidationError",
+        message: "Password is too short (must be more than 3 chars)",
+      },
+      request,
+      response
+    );
     return;
   }
 

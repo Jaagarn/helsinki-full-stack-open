@@ -1,9 +1,12 @@
+const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
 const supertest = require("supertest");
+
 const app = require("../app");
 const api = supertest(app);
 
 const Blog = require("../models/blog");
+const User = require("../models/user");
 
 const initialBlogs = [
   {
@@ -20,7 +23,24 @@ const initialBlogs = [
   },
 ];
 
+const setupUser = {
+  username: "root",
+  name: "name test",
+  password: "sekret",
+};
+
 beforeEach(async () => {
+  await User.deleteMany({});
+
+  const setupUserPasswordHash = await bcrypt.hash(setupUser.password, 10);
+
+  const user = new User({
+    username: setupUser.username,
+    name: setupUser.name,
+    passwordHash: setupUserPasswordHash,
+  });
+
+  await user.save();
   await Blog.deleteMany({});
   let blogObject = new Blog(initialBlogs[0]);
   await blogObject.save();
