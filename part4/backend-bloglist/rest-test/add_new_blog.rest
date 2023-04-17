@@ -1,11 +1,8 @@
-POST http://localhost:3003/api/blogs
+POST http://localhost:3003/api/users
 Content-Type:  application/json
 
 {
-
-    "title": "Blog on the web - part2",
-    "author": "Blog McMaker",
-    "url": "https://www.blogmacmaker2.xyz/",
-    "likes": 321
-    
+    "username": "Blog on the web - part2",
+    "name": "Blog McMaker",
+    "password": "password123!"
 }
