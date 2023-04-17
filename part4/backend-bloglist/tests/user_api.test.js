@@ -62,6 +62,40 @@ describe("when there is initially one user in db", () => {
   });
 });
 
+describe("can't create invalid users", () => {
+  beforeEach(async () => {
+    await User.deleteMany({});
+  });
+
+  test("password with less then 3 chars can't be created", async () => {
+    const newUser = {
+      username: "mluukkai",
+      name: "Matti Luukkainen",
+      password: "sa",
+    };
+
+    await api.post("/api/users").send(newUser).expect(400);
+
+    users = await User.find({});
+    const usersAtEnd = users.map((u) => u.toJSON());
+    expect(usersAtEnd).toHaveLength(0);
+  });
+
+  test("usernamne with less then 3 chars can't be created", async () => {
+    const newUser = {
+      username: "ml",
+      name: "Matti Luukkainen",
+      password: "sarewqwre2",
+    };
+
+    await api.post("/api/users").send(newUser).expect(400);
+
+    users = await User.find({});
+    const usersAtEnd = users.map((u) => u.toJSON());
+    expect(usersAtEnd).toHaveLength(0);
+  });
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
 });
