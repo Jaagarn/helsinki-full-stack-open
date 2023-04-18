@@ -3,9 +3,9 @@ Content-Type:  application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1jTTRrM3IiLCJpZCI6IjY0M2Q1ZWI5NmI1YzQ4MTgxNGUzMjdhMyIsImlhdCI6MTY4MTgwNzYwN30.mxWjo71GYV5aTl83O2g21hN5kq-G4jkKIc7B9tJ45Lk
 
 {
-    "title": "Blog 6 test title",
-    "author": "Blog 6 test author",
-    "url": "www.blog6testsite.xyz",
-    "likes": 6,
+    "title": "Blog 7 test title",
+    "author": "Blog 7 test author",
+    "url": "www.blog7testsite.xyz",
+    "likes": 7,
     "user": ""
 }

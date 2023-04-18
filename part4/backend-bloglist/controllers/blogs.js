@@ -58,6 +58,23 @@ blogsRouter.put("/:id", async (request, response, next) => {
 });
 
 blogsRouter.delete("/:id", async (request, response, next) => {
+  const decodedToken = jwt.verify(request.token, process.env.SECRET);
+
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: "token invalid" });
+  }
+
+  const user = await User.findById(decodedToken.id);
+
+  const blogToDelete = await Blog.findById(request.params.id);
+
+  console.log(blogToDelete.user.toString())
+  console.log(user.id.toString())
+
+  if (!(blogToDelete.user.toString() === decodedToken.id.toString())) {
+    return response.status(401).json({ error: "user mismatch" });
+  }
+
   try {
     await Blog.findByIdAndRemove(request.params.id);
     response.status(204).end();
