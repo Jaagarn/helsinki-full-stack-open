@@ -29,7 +29,10 @@ const setupUser = {
   password: "sekret",
 };
 
+let authToken = "ThisIsATerribleSolution";
+
 beforeEach(async () => {
+  await Blog.deleteMany({});
   await User.deleteMany({});
 
   const setupUserPasswordHash = await bcrypt.hash(setupUser.password, 10);
@@ -41,29 +44,43 @@ beforeEach(async () => {
   });
 
   await user.save();
-  await Blog.deleteMany({});
-  let blogObject = new Blog(initialBlogs[0]);
-  await blogObject.save();
-  blogObject = new Blog(initialBlogs[1]);
-  await blogObject.save();
+  const loginRespone = await api
+    .post("/api/login")
+    .send({ username: setupUser.username, password: setupUser.password });
+
+  authToken = loginRespone.body.token;
+
+  await api
+    .post("/api/blogs")
+    .set("Authorization", `Bearer ${authToken}`)
+    .send(initialBlogs[0]);
+  await api
+    .post("/api/blogs")
+    .set("Authorization", `Bearer ${authToken}`)
+    .send(initialBlogs[1]);
 });
 
 describe("get tests", () => {
   test("blogs are returned as json", async () => {
     await api
       .get("/api/blogs")
+      .set("Authorization", `Bearer ${authToken}`)
       .expect(200)
       .expect("Content-Type", /application\/json/);
   });
 
   test("all blogs are returned", async () => {
-    const response = await api.get("/api/blogs");
+    const response = await api
+      .get("/api/blogs")
+      .set("Authorization", `Bearer ${authToken}`);
 
     expect(response.body).toHaveLength(initialBlogs.length);
   });
 
   test("unique identifier property of the blog posts is named id", async () => {
-    const response = await api.get("/api/blogs");
+    const response = await api
+      .get("/api/blogs")
+      .set("Authorization", `Bearer ${authToken}`);
     response.body.forEach((r) => {
       expect(r.id).toBeDefined();
     });
@@ -71,7 +88,9 @@ describe("get tests", () => {
 
   //More like a specific value is precent in a blog object
   test("a specific blog is within the returned blogs", async () => {
-    const response = await api.get("/api/blogs");
+    const response = await api
+      .get("/api/blogs")
+      .set("Authorization", `Bearer ${authToken}`);
 
     const urls = response.body.map((r) => r.url);
     expect(urls).toContain("www.blog2testsite.xyz");
@@ -89,11 +108,14 @@ describe("post tests", () => {
 
     await api
       .post("/api/blogs")
+      .set("Authorization", `Bearer ${authToken}`)
       .send(newBlog)
       .expect(201)
       .expect("Content-Type", /application\/json/);
 
-    const response = await api.get("/api/blogs");
+    const response = await api
+      .get("/api/blogs")
+      .set("Authorization", `Bearer ${authToken}`);
 
     const authors = response.body.map((r) => r.author);
 
@@ -110,11 +132,14 @@ describe("post tests", () => {
 
     await api
       .post("/api/blogs")
+      .set("Authorization", `Bearer ${authToken}`)
       .send(newBlog)
       .expect(201)
       .expect("Content-Type", /application\/json/);
 
-    const response = await api.get("/api/blogs");
+    const response = await api
+      .get("/api/blogs")
+      .set("Authorization", `Bearer ${authToken}`);
 
     const responseBlog = response.body.find(
       (r) => r.title === "Blog 4 test title"
@@ -133,11 +158,14 @@ describe("post tests", () => {
 
     await api
       .post("/api/blogs")
+      .set("Authorization", `Bearer ${authToken}`)
       .send(newBlog)
       .expect(400)
       .expect("Content-Type", /application\/json/);
 
-    const response = await api.get("/api/blogs");
+    const response = await api
+      .get("/api/blogs")
+      .set("Authorization", `Bearer ${authToken}`);
 
     expect(response.body).toHaveLength(initialBlogs.length);
   });
@@ -151,11 +179,14 @@ describe("post tests", () => {
 
     await api
       .post("/api/blogs")
+      .set("Authorization", `Bearer ${authToken}`)
       .send(newBlog)
       .expect(400)
       .expect("Content-Type", /application\/json/);
 
-    const response = await api.get("/api/blogs");
+    const response = await api
+      .get("/api/blogs")
+      .set("Authorization", `Bearer ${authToken}`);
 
     expect(response.body).toHaveLength(initialBlogs.length);
   });
@@ -163,7 +194,9 @@ describe("post tests", () => {
 
 describe("put tests", () => {
   test("an existing blog can be updated", async () => {
-    const getResponeSetup = await api.get("/api/blogs");
+    const getResponeSetup = await api
+      .get("/api/blogs")
+      .set("Authorization", `Bearer ${authToken}`);
 
     const existingBlog = getResponeSetup.body.find(
       (r) => r.title === "Blog 1 test title"
@@ -178,6 +211,7 @@ describe("put tests", () => {
 
     const putResponse = await api
       .put(`/api/blogs/${existingBlog.id}`)
+      .set("Authorization", `Bearer ${authToken}`)
       .send(updatedBlog)
       .expect("Content-Type", /application\/json/);
 
@@ -189,15 +223,22 @@ describe("put tests", () => {
 
 describe("delete tests", () => {
   test("an existing blog can be deleted", async () => {
-    const getResponeSetup = await api.get("/api/blogs");
+    const getResponeSetup = await api
+      .get("/api/blogs")
+      .set("Authorization", `Bearer ${authToken}`);
 
     const existingBlog = getResponeSetup.body.find(
       (r) => r.title === "Blog 1 test title"
     );
 
-    await api.delete(`/api/blogs/${existingBlog.id}`).expect(204);
+    await api
+      .delete(`/api/blogs/${existingBlog.id}`)
+      .set("Authorization", `Bearer ${authToken}`)
+      .expect(204);
 
-    const getResponeVerification = await api.get("/api/blogs");
+    const getResponeVerification = await api
+      .get("/api/blogs")
+      .set("Authorization", `Bearer ${authToken}`);
 
     const ids = getResponeVerification.body.map((r) => r.id);
 
