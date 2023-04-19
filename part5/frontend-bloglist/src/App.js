@@ -38,6 +38,7 @@ const App = () => {
     const fetchBlogs = async () => {
       if (user === null) {
         setBlogs([]);
+        blogService.setToken(null);
         return;
       }
       try {
@@ -68,25 +69,32 @@ const App = () => {
     />
   );
 
-  const blogsComponent = () => (
-    <>
-      <h2>blogs</h2>
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
-      ))}
-    </>
-  );
+  const blogsComponent = () => {
+    if (blogs === null) {
+      return <></>;
+    }
+
+    return (
+      <>
+        <h2>blogs</h2>
+        {blogs.map((blog) => (
+          <Blog key={blog.id} blog={blog} />
+        ))}
+      </>
+    );
+  };
 
   return (
     <div>
-      <h1>Hello world</h1>
+      <h2>login to blogs</h2>
       <Notification className="error" message={errorMessage} />
       <Notification className="notification" message={notificationMessage} />
       {!user && loginForm()}
       {user && (
-          <div>
+          <>
+            <h2>blogs</h2>
             <p>{user.name} logged in</p>
-          </div>
+          </>
         ) &&
         blogsComponent()}
     </div>

@@ -8,6 +8,10 @@ const setToken = (newToken) => {
 };
 
 const getAll = async () => {
+  if (token === null) {
+    return;
+  }
+
   const config = {
     headers: { Authorization: token },
   };
@@ -15,7 +19,6 @@ const getAll = async () => {
   try {
     const request = await axios.get(baseUrl, config);
     const blogs = request.data.map((blog) => blog);
-    console.log("the blogs are: ", blogs)
     return blogs;
   } catch (error) {
     console.log("Get for blogs api failed: ", error);

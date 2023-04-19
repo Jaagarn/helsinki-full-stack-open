@@ -3,12 +3,12 @@ const usersRouter = require("express").Router();
 const User = require("../models/user");
 const middleware = require("../utils/middleware");
 
-usersRouter.get("/", async (request, response) => {
+usersRouter.get("/", async (request, response, next) => {
   try {
     const users = await User.find({}).populate("blogs");
     response.json(users);
   } catch (error) {
-    middleware.errorHandler(error, request, response);
+    next(error);
   }
 });
 
@@ -40,7 +40,7 @@ usersRouter.post("/", async (request, response) => {
     const savedUser = await user.save();
     response.status(201).json(savedUser);
   } catch (error) {
-    middleware.errorHandler(error, request, response);
+    next(error);
   }
 });
 
@@ -62,7 +62,7 @@ usersRouter.put("/:id", async (request, response, next) => {
     );
     response.json(updatedUser);
   } catch (error) {
-    middleware.errorHandler(error, request, response);
+    next(error);
   }
 });
 
@@ -71,7 +71,7 @@ usersRouter.delete("/:id", async (request, response, next) => {
     await User.findByIdAndRemove(request.params.id);
     response.status(204).end();
   } catch (error) {
-    middleware.errorHandler(error, request, response);
+    next(error);
   }
 });
 
