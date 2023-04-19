@@ -21,6 +21,8 @@ const App = () => {
         username,
         password,
       });
+
+      blogService.setToken(user.token);
       setUser(user);
       setUsername("");
       setPassword("");
@@ -31,6 +33,22 @@ const App = () => {
       }, 5000);
     }
   };
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      if (user === null) {
+        setBlogs([]);
+        return;
+      }
+      try {
+        const blogs = await blogService.getAll();
+        setBlogs(blogs);
+      } catch (error) {
+        console.log("Fetch blogs in app error: ", error);
+      }
+    };
+    fetchBlogs();
+  }, [user]);
 
   const handleOnChangedUsername = (event) => {
     setUsername(event.target.value);
@@ -50,6 +68,15 @@ const App = () => {
     />
   );
 
+  const blogsComponent = () => (
+    <>
+      <h2>blogs</h2>
+      {blogs.map((blog) => (
+        <Blog key={blog.id} blog={blog} />
+      ))}
+    </>
+  );
+
   return (
     <div>
       <h1>Hello world</h1>
@@ -57,10 +84,11 @@ const App = () => {
       <Notification className="notification" message={notificationMessage} />
       {!user && loginForm()}
       {user && (
-        <div>
-          <p>{user.name} logged in</p>
-        </div>
-      )}
+          <div>
+            <p>{user.name} logged in</p>
+          </div>
+        ) &&
+        blogsComponent()}
     </div>
   );
 };

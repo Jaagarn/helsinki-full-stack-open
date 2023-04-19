@@ -1,10 +1,27 @@
-import axios from 'axios'
-const baseUrl = '/api/blogs'
+import axios from "axios";
+const baseUrl = "/api/blogs";
 
-const getAll = () => {
-  const request = axios.get(baseUrl)
-  return request.then(response => response.data)
-}
+let token = null;
+
+const setToken = (newToken) => {
+  token = `Bearer ${newToken}`;
+};
+
+const getAll = async () => {
+  const config = {
+    headers: { Authorization: token },
+  };
+
+  try {
+    const request = await axios.get(baseUrl, config);
+    const blogs = request.data.map((blog) => blog);
+    console.log("the blogs are: ", blogs)
+    return blogs;
+  } catch (error) {
+    console.log("Get for blogs api failed: ", error);
+    return;
+  }
+};
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default { getAll }
+export default { getAll, setToken };
