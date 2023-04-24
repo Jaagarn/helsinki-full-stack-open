@@ -7,6 +7,32 @@ const setToken = (newToken) => {
   token = `Bearer ${newToken}`;
 };
 
+const postNewBlog = async (title, author, url) => {
+  const newBlog = {
+    title: title,
+    author: author,
+    url: url,
+    likes: 0,
+  };
+
+  const config = {
+    headers: { Authorization: token },
+  };
+
+  try {
+    const response = await axios.post(baseUrl, newBlog, config);
+    return response;
+  } catch (error) {
+    if (error.response) {
+      return error.response;
+    } else if (error.request) {
+      console.log(error.request);
+    } else {
+      console.log('Error', error.message);
+    }
+  }
+};
+
 const getAll = async () => {
   if (token === null) {
     return;
@@ -27,4 +53,4 @@ const getAll = async () => {
 };
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default { getAll, setToken };
+export default { getAll, postNewBlog, setToken };

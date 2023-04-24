@@ -3,7 +3,7 @@ export const Login = ({
   username,
   password,
   handleOnChangedUsername,
-  handleOnChangedPassword
+  handleOnChangedPassword,
 }) => {
   return (
     <>
@@ -12,11 +12,11 @@ export const Login = ({
           username:{" "}
           <input value={username} onChange={handleOnChangedUsername} />
         </div>
-        <div style={{ marginTop: 10 }} >
+        <div style={{ marginTop: 10 }}>
           password:{" "}
           <input value={password} onChange={handleOnChangedPassword} />
         </div>
-        <div style={{ marginTop: 10 }} >
+        <div style={{ marginTop: 10 }}>
           <button type="submit">login</button>
         </div>
       </form>
@@ -24,5 +24,4 @@ export const Login = ({
   );
 };
 
-
-export default Login
+export default Login;
