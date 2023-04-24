@@ -16,7 +16,7 @@ export const Login = ({
           password:{" "}
           <input value={password} onChange={handleOnChangedPassword} />
         </div>
-        <div>
+        <div style={{ marginTop: 10 }} >
           <button type="submit">login</button>
         </div>
       </form>

@@ -13,27 +13,6 @@ const App = () => {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
 
-  const attemptLogin = async (event) => {
-    event.preventDefault();
-
-    try {
-      const user = await loginService.login({
-        username,
-        password,
-      });
-
-      blogService.setToken(user.token);
-      setUser(user);
-      setUsername("");
-      setPassword("");
-    } catch (exception) {
-      setErrorMessage("Wrong credentials");
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
-    }
-  };
-
   useEffect(() => {
     const fetchBlogs = async () => {
       if (user === null) {
@@ -51,6 +30,46 @@ const App = () => {
     fetchBlogs();
   }, [user]);
 
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem("loggedInUserBlogsRank");
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      setUser(user);
+      blogService.setToken(user.token);
+    }
+  }, []);
+
+  const attemptLogin = async (event) => {
+    event.preventDefault();
+
+    try {
+      const user = await loginService.login({
+        username,
+        password,
+      });
+
+      window.localStorage.setItem(
+        "loggedInUserBlogsRank",
+        JSON.stringify(user)
+      );
+
+      blogService.setToken(user.token);
+      setUser(user);
+      setUsername("");
+      setPassword("");
+    } catch (exception) {
+      setErrorMessage("Wrong credentials");
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }
+  };
+
+  const handleLogout = (event) => {
+    window.localStorage.removeItem("loggedInUserBlogsRank");
+    setUser(null);
+  };
+
   const handleOnChangedUsername = (event) => {
     setUsername(event.target.value);
   };
@@ -60,23 +79,34 @@ const App = () => {
   };
 
   const loginForm = () => (
-    <Login
-      username={username}
-      password={password}
-      handleOnChangedUsername={handleOnChangedUsername}
-      handleOnChangedPassword={handleOnChangedPassword}
-      attemptLogin={attemptLogin}
-    />
+    <>
+      <h2>login to blogs</h2>
+      <Login
+        username={username}
+        password={password}
+        handleOnChangedUsername={handleOnChangedUsername}
+        handleOnChangedPassword={handleOnChangedPassword}
+        attemptLogin={attemptLogin}
+      />
+    </>
   );
 
   const blogsComponent = () => {
     if (blogs === null) {
-      return <></>;
+      return (
+        <>
+          <h2>blogs</h2>
+          <p>{user.name} logged in</p>
+          <button onClick={handleLogout}>logout</button>
+        </>
+      );
     }
 
     return (
       <>
         <h2>blogs</h2>
+        <p>{user.name} logged in</p>
+        <button onClick={handleLogout}>logout</button>
         {blogs.map((blog) => (
           <Blog key={blog.id} blog={blog} />
         ))}
@@ -86,17 +116,10 @@ const App = () => {
 
   return (
     <div>
-      <h2>login to blogs</h2>
       <Notification className="error" message={errorMessage} />
       <Notification className="notification" message={notificationMessage} />
       {!user && loginForm()}
-      {user && (
-          <>
-            <h2>blogs</h2>
-            <p>{user.name} logged in</p>
-          </>
-        ) &&
-        blogsComponent()}
+      {user && blogsComponent()}
     </div>
   );
 };
