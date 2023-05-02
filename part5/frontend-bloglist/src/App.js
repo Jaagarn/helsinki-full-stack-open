@@ -13,9 +13,6 @@ const App = () => {
   const [notificationMessage, setNotificationMessage] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [url, setUrl] = useState("");
   const [user, setUser] = useState(null);
 
   const fetchBlogs = async () => {
@@ -57,11 +54,13 @@ const App = () => {
     }
   };
 
-  const attemptCreationBlog = async (event) => {
-    event.preventDefault();
-
+  const attemptCreationBlog = async (newBlog) => {
     try {
-      const response = await blogService.postNewBlog(title, author, url);
+      const response = await blogService.postNewBlog(
+        newBlog.title,
+        newBlog.author,
+        newBlog.url
+      );
 
       if (response.status !== 201) {
         setErrorMessage(
@@ -72,10 +71,6 @@ const App = () => {
         }, 5000);
         return;
       }
-
-      setTitle("");
-      setAuthor("");
-      setUrl("");
 
       await fetchBlogs();
 
@@ -102,18 +97,6 @@ const App = () => {
 
   const handleOnChangedPassword = (event) => {
     setPassword(event.target.value);
-  };
-
-  const handleOnChangedTitle = (event) => {
-    setTitle(event.target.value);
-  };
-
-  const handleOnChangedAuthor = (event) => {
-    setAuthor(event.target.value);
-  };
-
-  const handleOnChangedUrl = (event) => {
-    setUrl(event.target.value);
   };
 
   useEffect(() => {
@@ -156,17 +139,11 @@ const App = () => {
         <>
           <h2>user</h2>
           <p>{user.name} logged in</p>
-          <button onClick={handleLogout} style={{ marginBottom: 10 }}>logout</button>
+          <button onClick={handleLogout} style={{ marginBottom: 10 }}>
+            logout
+          </button>
           <Togglable buttonLabel="Create new blog">
-            <CreateBlog
-              addNewBlog={attemptCreationBlog}
-              title={title}
-              handleOnChangedTitle={handleOnChangedTitle}
-              author={author}
-              handleOnChangedAuthor={handleOnChangedAuthor}
-              url={url}
-              handleOnChangedUrl={handleOnChangedUrl}
-            />
+            <CreateBlog createNewBlog={attemptCreationBlog} />
           </Togglable>
         </>
       );
@@ -176,17 +153,11 @@ const App = () => {
       <>
         <h2>user</h2>
         <p>{user.name} logged in</p>
-        <button onClick={handleLogout} style={{ marginBottom: 10 }}>logout</button>
-        <Togglable buttonLabel="Create new blog" >
-          <CreateBlog
-            addNewBlog={attemptCreationBlog}
-            title={title}
-            handleOnChangedTitle={handleOnChangedTitle}
-            author={author}
-            handleOnChangedAuthor={handleOnChangedAuthor}
-            url={url}
-            handleOnChangedUrl={handleOnChangedUrl}
-          />
+        <button onClick={handleLogout} style={{ marginBottom: 10 }}>
+          logout
+        </button>
+        <Togglable buttonLabel="Create new blog">
+          <CreateBlog createNewBlog={attemptCreationBlog} />
         </Togglable>
         <h2>blogs</h2>
         {blogs.map((blog) => (
