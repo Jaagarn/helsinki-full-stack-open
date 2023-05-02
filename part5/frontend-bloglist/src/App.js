@@ -3,6 +3,7 @@ import Blog from "./components/Blog";
 import Notification from "./components/Notification";
 import Login from "./components/Login";
 import CreateBlog from "./components/CreateBlog";
+import Togglable from "./components/Togglable";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 
@@ -63,7 +64,9 @@ const App = () => {
       const response = await blogService.postNewBlog(title, author, url);
 
       if (response.status !== 201) {
-        setErrorMessage(`Failed to create a blog: ${response.status} ${response.statusText}`);
+        setErrorMessage(
+          `Failed to create a blog: ${response.status} ${response.statusText}`
+        );
         setTimeout(() => {
           setErrorMessage(null);
         }, 5000);
@@ -153,7 +156,28 @@ const App = () => {
         <>
           <h2>user</h2>
           <p>{user.name} logged in</p>
-          <button onClick={handleLogout}>logout</button>
+          <button onClick={handleLogout} style={{ marginBottom: 10 }}>logout</button>
+          <Togglable buttonLabel="Create new blog">
+            <CreateBlog
+              addNewBlog={attemptCreationBlog}
+              title={title}
+              handleOnChangedTitle={handleOnChangedTitle}
+              author={author}
+              handleOnChangedAuthor={handleOnChangedAuthor}
+              url={url}
+              handleOnChangedUrl={handleOnChangedUrl}
+            />
+          </Togglable>
+        </>
+      );
+    }
+
+    return (
+      <>
+        <h2>user</h2>
+        <p>{user.name} logged in</p>
+        <button onClick={handleLogout} style={{ marginBottom: 10 }}>logout</button>
+        <Togglable buttonLabel="Create new blog" >
           <CreateBlog
             addNewBlog={attemptCreationBlog}
             title={title}
@@ -163,24 +187,7 @@ const App = () => {
             url={url}
             handleOnChangedUrl={handleOnChangedUrl}
           />
-        </>
-      );
-    }
-
-    return (
-      <>
-        <h2>user</h2>
-        <p>{user.name} logged in</p>
-        <button onClick={handleLogout}>logout</button>
-        <CreateBlog
-          addNewBlog={attemptCreationBlog}
-          title={title}
-          handleOnChangedTitle={handleOnChangedTitle}
-          author={author}
-          handleOnChangedAuthor={handleOnChangedAuthor}
-          url={url}
-          handleOnChangedUrl={handleOnChangedUrl}
-        />
+        </Togglable>
         <h2>blogs</h2>
         {blogs.map((blog) => (
           <Blog key={blog.id} blog={blog} />
