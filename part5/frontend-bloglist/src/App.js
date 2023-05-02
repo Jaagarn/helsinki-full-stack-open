@@ -142,7 +142,7 @@ const App = () => {
           <button onClick={handleLogout} style={{ marginBottom: 10 }}>
             logout
           </button>
-          <Togglable buttonLabel="Create new blog">
+          <Togglable viewButtonLabel="Create new blog" hideButtonLabel="cancel">
             <CreateBlog createNewBlog={attemptCreationBlog} />
           </Togglable>
         </>
@@ -156,12 +156,14 @@ const App = () => {
         <button onClick={handleLogout} style={{ marginBottom: 10 }}>
           logout
         </button>
-        <Togglable buttonLabel="Create new blog">
+        <Togglable viewButtonLabel="Create new blog" hideButtonLabel="cancel">
           <CreateBlog createNewBlog={attemptCreationBlog} />
         </Togglable>
         <h2>blogs</h2>
         {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} />
+          <Togglable key={blog.id} viewButtonLabel="view" hideButtonLabel="hide">
+            <Blog key={blog.id} blog={blog} />
+          </Togglable>
         ))}
       </>
     );
