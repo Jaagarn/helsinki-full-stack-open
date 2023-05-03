@@ -12,7 +12,7 @@ usersRouter.get("/", async (request, response, next) => {
   }
 });
 
-usersRouter.post("/", async (request, response) => {
+usersRouter.post("/", async (request, response, next) => {
   const { username, name, password } = request.body;
 
   if (password.length < 3) {

@@ -1,4 +1,5 @@
 import axios from "axios";
+
 const baseUrl = "/api/blogs";
 
 let token = null;
@@ -28,7 +29,7 @@ const postNewBlog = async (title, author, url) => {
     } else if (error.request) {
       console.log(error.request);
     } else {
-      console.log('Error', error.message);
+      console.log("Error", error.message);
     }
   }
 };
@@ -43,8 +44,9 @@ const getAll = async () => {
   };
 
   try {
-    const request = await axios.get(baseUrl, config);
-    const blogs = request.data.map((blog) => blog);
+    const blogRequest = await axios.get(baseUrl, config);
+    const blogs = blogRequest.data.map((blog) => blog);
+
     return blogs;
   } catch (error) {
     console.log("Get for blogs api failed: ", error);

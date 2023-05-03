@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import Blog from "./components/Blog";
 import Notification from "./components/Notification";
 import Login from "./components/Login";
 import CreateBlog from "./components/CreateBlog";
 import Togglable from "./components/Togglable";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
+import TogglableBlog from "./components/TogglableBlog";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -156,14 +156,12 @@ const App = () => {
         <button onClick={handleLogout} style={{ marginBottom: 10 }}>
           logout
         </button>
-        <Togglable viewButtonLabel="Create new blog" hideButtonLabel="cancel">
+        <Togglable viewButtonLabel="Create new blog" hideButtonLabel="cancel" >
           <CreateBlog createNewBlog={attemptCreationBlog} />
         </Togglable>
         <h2>blogs</h2>
         {blogs.map((blog) => (
-          <Togglable key={blog.id} viewButtonLabel="view" hideButtonLabel="hide">
-            <Blog key={blog.id} blog={blog} />
-          </Togglable>
+          <TogglableBlog key={blog.id} viewButtonLabel="view" hideButtonLabel="hide" style={{ marginBottom: 10 }} blog={blog} />
         ))}
       </>
     );
