@@ -5,33 +5,38 @@ const TogglableBlog = (props) => {
 
   const hideWhenVisible = { display: showFull ? "none" : "" };
   const showWhenVisible = { display: showFull ? "" : "none" };
- 
+
+  // I don't think this should be possible, I just had some bad data in the DB
   const username = props.blog.user?.name ?? "Unknown";
 
   const toggleShowFull = () => {
     setShowFull(!showFull);
   };
 
+  const handleLike = async (event) => {
+    event.preventDefault()
+    await props.handleLike(props.blog)
+  }
+
   return (
     <>
       <div style={props.style} className="blog-box">
         <div style={hideWhenVisible}>
           <p>
-            {props.blog.title} {props.blog.author}{" "}
+            title: {props.blog.title}, author: {props.blog.author}{" "}
             <button onClick={toggleShowFull}>{props.viewButtonLabel}</button>
           </p>
         </div>
         <div style={showWhenVisible}>
           <p>
-            {props.blog.title} {props.blog.author}{" "}
+            title: {props.blog.title}, author: {props.blog.author}{" "}
             <button onClick={toggleShowFull}>{props.hideButtonLabel}</button>
           </p>
-          <p>{props.blog.url}</p>
+          <p>url: {props.blog.url}</p>
           <p>
-            {props.blog.likes}{" "}
-            <button>placeholder</button>
+            likes: {props.blog.likes} <button onClick={handleLike}>placeholder</button>
           </p>
-          <p>{username}</p>
+          <p>added by: {username}</p>
         </div>
       </div>
     </>

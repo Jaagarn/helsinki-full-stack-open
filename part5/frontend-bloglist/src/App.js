@@ -18,6 +18,7 @@ const App = () => {
   const fetchBlogs = async () => {
     try {
       const blogs = await blogService.getAll();
+      blogs.sort((blogx, blogy) =>  blogy.likes - blogx.likes)
       setBlogs(blogs);
     } catch (error) {
       console.log("Fetch blogs in app error: ", error);
@@ -99,6 +100,32 @@ const App = () => {
     setPassword(event.target.value);
   };
 
+  const updateLikesOnBlog = async (blog) => {
+    try {
+      const response = await blogService.likeABlog(blog);
+
+      if (response.status !== 200) {
+        setErrorMessage(
+          `Failed to like a blog: ${response.status} ${response.statusText}`
+        );
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 5000);
+        return;
+      }
+
+      //First I wanted to just update local blogs, but some other logged in user on another webpage might change the value
+      //So I just fetch them every time.
+      await fetchBlogs();
+
+    } catch (error) {
+      setErrorMessage(`Failed to like a blog: frontend issues`);
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }
+  };
+
   useEffect(() => {
     const updateBlogs = async () => {
       if (user === null) {
@@ -156,12 +183,19 @@ const App = () => {
         <button onClick={handleLogout} style={{ marginBottom: 10 }}>
           logout
         </button>
-        <Togglable viewButtonLabel="Create new blog" hideButtonLabel="cancel" >
+        <Togglable viewButtonLabel="Create new blog" hideButtonLabel="cancel">
           <CreateBlog createNewBlog={attemptCreationBlog} />
         </Togglable>
         <h2>blogs</h2>
         {blogs.map((blog) => (
-          <TogglableBlog key={blog.id} viewButtonLabel="view" hideButtonLabel="hide" style={{ marginBottom: 10 }} blog={blog} />
+          <TogglableBlog
+            key={blog.id}
+            viewButtonLabel="view"
+            hideButtonLabel="hide"
+            style={{ marginBottom: 10 }}
+            blog={blog}
+            handleLike={updateLikesOnBlog}
+          />
         ))}
       </>
     );
