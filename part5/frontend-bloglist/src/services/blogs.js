@@ -85,5 +85,26 @@ const likeABlog = async (blog) => {
   }
 };
 
+const removeABlog = async (blog) => {
+  const url = `${baseUrl}/${blog.id}`
+
+  const config = {
+    headers: { Authorization: token },
+  };
+
+  try {
+    const response = await axios.delete(url, config);
+    return response;
+  } catch (error) {
+    if (error.response) {
+      return error.response;
+    } else if (error.request) {
+      console.log(error.request);
+    } else {
+      console.log("Error", error.message);
+    }
+  }
+};
+
 // eslint-disable-next-line import/no-anonymous-default-export
-export default { setToken, getAll, postNewBlog, likeABlog };
+export default { setToken, getAll, postNewBlog, likeABlog, removeABlog };

@@ -27,9 +27,24 @@
   padding-right: 4px;
   width: fit-content;
   height: fit-content;
-
 }
 
 h1 {
   color: green;
+}
+
+.blog-flex {
+  max-width: 50%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-around;
+}
+
+.delete-button {
+  background-color: lightblue;
+  color: black;
+  border-radius: 4px;
+  width: 120px;
+  margin: 0px 0px 20px 40px;
 }

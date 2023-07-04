@@ -18,7 +18,7 @@ const App = () => {
   const fetchBlogs = async () => {
     try {
       const blogs = await blogService.getAll();
-      blogs.sort((blogx, blogy) =>  blogy.likes - blogx.likes)
+      blogs.sort((blogx, blogy) => blogy.likes - blogx.likes);
       setBlogs(blogs);
     } catch (error) {
       console.log("Fetch blogs in app error: ", error);
@@ -117,7 +117,29 @@ const App = () => {
       //First I wanted to just update local blogs, but some other logged in user on another webpage might change the value
       //So I just fetch them every time.
       await fetchBlogs();
+    } catch (error) {
+      setErrorMessage(`Failed to like a blog: frontend issues`);
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }
+  };
 
+  const removeABlog = async (blog) => {
+    try {
+      const response = await blogService.removeABlog(blog);
+
+      if (response.status !== 204) {
+        setErrorMessage(
+          `Failed to remove a blog: ${response.status} ${response.statusText}`
+        );
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 5000);
+        return;
+      }
+
+      await fetchBlogs();
     } catch (error) {
       setErrorMessage(`Failed to like a blog: frontend issues`);
       setTimeout(() => {
@@ -187,16 +209,20 @@ const App = () => {
           <CreateBlog createNewBlog={attemptCreationBlog} />
         </Togglable>
         <h2>blogs</h2>
-        {blogs.map((blog) => (
-          <TogglableBlog
-            key={blog.id}
-            viewButtonLabel="view"
-            hideButtonLabel="hide"
-            style={{ marginBottom: 10 }}
-            blog={blog}
-            handleLike={updateLikesOnBlog}
-          />
-        ))}
+        <div className="blog-flex">
+          {blogs.map((blog) => (
+            <TogglableBlog
+              key={blog.id}
+              currentUser={user}
+              viewButtonLabel="view"
+              hideButtonLabel="hide"
+              style={{ marginBottom: 10 }}
+              blog={blog}
+              handleLike={updateLikesOnBlog}
+              handleRemoval={removeABlog}
+            />
+          ))}
+        </div>
       </>
     );
   };

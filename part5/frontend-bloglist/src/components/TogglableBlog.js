@@ -14,9 +14,20 @@ const TogglableBlog = (props) => {
   };
 
   const handleLike = async (event) => {
-    event.preventDefault()
-    await props.handleLike(props.blog)
-  }
+    event.preventDefault();
+    await props.handleLike(props.blog);
+  };
+
+  const handleRemove = async (event) => {
+    event.preventDefault();
+    await props.handleRemoval(props.blog);
+  };
+
+  const removeButton = () => (
+    <button className="delete-button" onClick={handleRemove}>
+      remove
+    </button>
+  );
 
   return (
     <>
@@ -34,9 +45,11 @@ const TogglableBlog = (props) => {
           </p>
           <p>url: {props.blog.url}</p>
           <p>
-            likes: {props.blog.likes} <button onClick={handleLike}>placeholder</button>
+            likes: {props.blog.likes} <button onClick={handleLike}>like</button>
           </p>
           <p>added by: {username}</p>
+          {/* Can only delete a blog if the currentUser created it. Backend will reject any attempts*/}
+          {props.currentUser.id === props.blog.user.id && removeButton()}
         </div>
       </div>
     </>
