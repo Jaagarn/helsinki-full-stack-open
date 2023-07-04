@@ -1,6 +1,8 @@
 import { useState } from "react";
+import PropTypes from "prop-types";
 
 const TogglableBlog = (props) => {
+
   const [showFull, setShowFull] = useState(false);
 
   const hideWhenVisible = { display: showFull ? "none" : "" };
@@ -60,6 +62,15 @@ const TogglableBlog = (props) => {
       </div>
     </>
   );
+};
+
+TogglableBlog.protoTypes = {
+  currentUser: PropTypes.object.isRequired,
+  viewButtonLabel: PropTypes.string.isRequired,
+  hideButtonLabel: PropTypes.string.isRequired,
+  blog: PropTypes.string.isRequired,
+  handleLike: PropTypes.func.isRequired,
+  handleRemoval: PropTypes.func.isRequired,
 };
 
 export default TogglableBlog;
