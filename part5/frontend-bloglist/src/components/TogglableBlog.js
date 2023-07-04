@@ -20,7 +20,13 @@ const TogglableBlog = (props) => {
 
   const handleRemove = async (event) => {
     event.preventDefault();
-    await props.handleRemoval(props.blog);
+    const confirmation = window.confirm(
+      `Do you want to remove "${props.blog.title}" by ${props.blog.author}?`
+    );
+
+    if (confirmation) {
+      await props.handleRemoval(props.blog);
+    }
   };
 
   const removeButton = () => (
