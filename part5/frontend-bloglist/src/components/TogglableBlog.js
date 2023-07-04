@@ -2,11 +2,7 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 
 const TogglableBlog = (props) => {
-
   const [showFull, setShowFull] = useState(false);
-
-  const hideWhenVisible = { display: showFull ? "none" : "" };
-  const showWhenVisible = { display: showFull ? "" : "none" };
 
   // I don't think this should be possible, I just had some bad data in the DB
   const username = props.blog.user?.name ?? "Unknown";
@@ -40,25 +36,28 @@ const TogglableBlog = (props) => {
   return (
     <>
       <div style={props.style} className="blog-box">
-        <div style={hideWhenVisible}>
-          <p>
-            title: {props.blog.title}, author: {props.blog.author}{" "}
-            <button onClick={toggleShowFull}>{props.viewButtonLabel}</button>
+        {!showFull && (
+          <p data-testid="blog-title-collapsed">
+            title: {props.blog.title}, author: {props.blog.author}
+            <button style={{ marginLeft: 10 }} onClick={toggleShowFull}>{props.viewButtonLabel}</button>
           </p>
-        </div>
-        <div style={showWhenVisible}>
-          <p>
-            title: {props.blog.title}, author: {props.blog.author}{" "}
-            <button onClick={toggleShowFull}>{props.hideButtonLabel}</button>
-          </p>
-          <p>url: {props.blog.url}</p>
-          <p>
-            likes: {props.blog.likes} <button onClick={handleLike}>like</button>
-          </p>
-          <p>added by: {username}</p>
-          {/* Can only delete a blog if the currentUser created it. Backend will reject any attempts*/}
-          {props.currentUser.id === props.blog.user.id && removeButton()}
-        </div>
+        )}
+        {showFull && (
+          <>
+            <p data-testid="blog-title-expanded">
+              title: {props.blog.title}, author: {props.blog.author}
+              <button style={{ marginLeft: 10 }} onClick={toggleShowFull}>{props.hideButtonLabel}</button>
+            </p>
+            <p data-testid="blog-url">url: {props.blog.url}</p>
+            <p data-testid="blog-likes">
+              likes: {props.blog.likes}
+              <button style={{ marginLeft: 10 }} onClick={handleLike}>like</button>
+            </p>
+            <p data-testid="blog-username">added by: {username}</p>
+            {/* Can only delete a blog if the currentUser created it. Backend will reject any attempts*/}
+            {props.currentUser.id === props.blog.user.id && removeButton()}
+          </>
+        )}
       </div>
     </>
   );
