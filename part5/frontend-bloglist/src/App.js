@@ -184,23 +184,8 @@ const App = () => {
   );
 
   const blogsComponent = () => {
-    if (blogs === null) {
-      return (
-        <>
-          <h2>user</h2>
-          <p>{user.name} logged in</p>
-          <button onClick={handleLogout} style={{ marginBottom: 10 }}>
-            logout
-          </button>
-          <Togglable viewButtonLabel="Create new blog" hideButtonLabel="cancel">
-            <CreateBlog createNewBlog={attemptCreationBlog} />
-          </Togglable>
-        </>
-      );
-    }
-
     return (
-      <>
+      <div data-testid="blogs-home-page">
         <h2>user</h2>
         <p>{user.name} logged in</p>
         <button onClick={handleLogout} style={{ marginBottom: 10 }}>
@@ -209,22 +194,26 @@ const App = () => {
         <Togglable viewButtonLabel="Create new blog" hideButtonLabel="cancel">
           <CreateBlog createNewBlog={attemptCreationBlog} />
         </Togglable>
-        <h2>blogs</h2>
-        <div className="blog-flex">
-          {blogs.map((blog) => (
-            <TogglableBlog
-              key={blog.id}
-              currentUser={user}
-              viewButtonLabel="view"
-              hideButtonLabel="hide"
-              style={{ marginBottom: 10 }}
-              blog={blog}
-              handleLike={updateLikesOnBlog}
-              handleRemoval={removeABlog}
-            />
-          ))}
-        </div>
-      </>
+        {blogs !== null && (
+          <>
+            <h2>blogs</h2>
+            <div className="blog-flex">
+              {blogs.map((blog) => (
+                <TogglableBlog
+                  key={blog.id}
+                  currentUser={user}
+                  viewButtonLabel="view"
+                  hideButtonLabel="hide"
+                  style={{ marginBottom: 10 }}
+                  blog={blog}
+                  handleLike={updateLikesOnBlog}
+                  handleRemoval={removeABlog}
+                />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
     );
   };
 
