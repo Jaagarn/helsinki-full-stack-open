@@ -10,14 +10,24 @@ export const Login = ({
       <form onSubmit={attemptLogin}>
         <div>
           username:{" "}
-          <input value={username} onChange={handleOnChangedUsername} />
+          <input
+            value={username}
+            onChange={handleOnChangedUsername}
+            data-testid="login-username-input"
+          />
         </div>
         <div style={{ marginTop: 10 }}>
           password:{" "}
-          <input value={password} onChange={handleOnChangedPassword} />
+          <input
+            value={password}
+            onChange={handleOnChangedPassword}
+            data-testid="login-password-input"
+          />
         </div>
         <div style={{ marginTop: 10 }}>
-          <button type="submit">login</button>
+          <button type="submit" data-testid="login-login-button">
+            login
+          </button>
         </div>
       </form>
     </>
