@@ -10,9 +10,11 @@ const Togglable = (props) => {
   return (
     <>
       {!visible && (
-        <button onClick={toggleVisibility} data-testid="toggable-show-button">
-          {props.viewButtonLabel}
-        </button>
+        <div>
+          <button onClick={toggleVisibility} data-testid="toggable-show-button">
+            {props.viewButtonLabel}
+          </button>
+        </div>
       )}
       {visible && (
         <div>

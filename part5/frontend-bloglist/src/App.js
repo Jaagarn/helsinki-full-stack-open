@@ -188,7 +188,11 @@ const App = () => {
       <div data-testid="blogs-home-page">
         <h2>user</h2>
         <p>{user.name} logged in</p>
-        <button onClick={handleLogout} style={{ marginBottom: 10 }}>
+        <button
+          onClick={handleLogout}
+          style={{ marginBottom: 10 }}
+          data-testid="blogs-home-logout-button"
+        >
           logout
         </button>
         <Togglable viewButtonLabel="Create new blog" hideButtonLabel="cancel">

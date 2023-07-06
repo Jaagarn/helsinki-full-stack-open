@@ -28,7 +28,11 @@ const TogglableBlog = (props) => {
   };
 
   const removeButton = () => (
-    <button className="delete-button" onClick={handleRemove}>
+    <button
+      className="delete-button"
+      data-testid="blog-remove-button"
+      onClick={handleRemove}
+    >
       remove
     </button>
   );
@@ -39,19 +43,37 @@ const TogglableBlog = (props) => {
         {!showFull && (
           <p data-testid="blog-title-collapsed">
             title: {props.blog.title}, author: {props.blog.author}
-            <button style={{ marginLeft: 10 }} onClick={toggleShowFull} data-testid="blog-view-button">{props.viewButtonLabel}</button>
+            <button
+              style={{ marginLeft: 10 }}
+              onClick={toggleShowFull}
+              data-testid="blog-view-button"
+            >
+              {props.viewButtonLabel}
+            </button>
           </p>
         )}
         {showFull && (
           <>
             <p data-testid="blog-title-expanded">
               title: {props.blog.title}, author: {props.blog.author}
-              <button style={{ marginLeft: 10 }} onClick={toggleShowFull} data-testid="blog-hide-button">{props.hideButtonLabel}</button>
+              <button
+                style={{ marginLeft: 10 }}
+                onClick={toggleShowFull}
+                data-testid="blog-hide-button"
+              >
+                {props.hideButtonLabel}
+              </button>
             </p>
             <p data-testid="blog-url">url: {props.blog.url}</p>
             <p data-testid="blog-likes">
               likes: {props.blog.likes}
-              <button style={{ marginLeft: 10 }} onClick={handleLike} data-testid="blog-like-button">like</button>
+              <button
+                style={{ marginLeft: 10 }}
+                onClick={handleLike}
+                data-testid="blog-like-button"
+              >
+                like
+              </button>
             </p>
             <p data-testid="blog-username">added by: {username}</p>
             {/* Can only delete a blog if the currentUser created it. Backend will reject any attempts*/}
