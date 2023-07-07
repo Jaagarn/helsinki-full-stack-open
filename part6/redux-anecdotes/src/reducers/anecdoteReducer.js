@@ -26,9 +26,12 @@ const anecdoteSlice = createSlice({
   initialState: initialState,
   reducers: {
     createAnecdote(state, action) {
+      // The payload is the new anecdotes content
       state.push(asObject(action.payload));
     },
     upVoteAnecdote(state, action) {
+      // The payload is the id of the anecdote that is getting an update
+      // The anecdote with most upvotes comes first in the list
       return state
         .map((anecdote) =>
           anecdote.id === action.payload
