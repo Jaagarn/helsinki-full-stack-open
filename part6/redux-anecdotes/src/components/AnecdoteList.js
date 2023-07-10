@@ -10,7 +10,8 @@ const AnecdoteList = () => {
       .map((anecdotes) => anecdotes)
       .filter((anecdotes) =>
         anecdotes.content.toLowerCase().includes(state.filter.toLowerCase())
-      );
+      )
+      .sort((a, b) => a.votes < b.votes);
   });
 
   const dispatch = useDispatch();
