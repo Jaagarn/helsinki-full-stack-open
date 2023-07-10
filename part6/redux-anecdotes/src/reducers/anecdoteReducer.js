@@ -7,21 +7,16 @@ const anecdoteSlice = createSlice({
   name: "anecdote",
   initialState: initialState,
   reducers: {
-    createAnecdote(state, action) {
-      // The payload is the new anecdotes content
-      state.push(action.payload);
-    },
-    upVoteAnecdote(state, action) {
-      // The payload is the id of the anecdote that is getting an update
-      return state.map((anecdote) =>
-        anecdote.id === action.payload
-          ? { ...anecdote, votes: anecdote.votes + 1 }
-          : anecdote
-      );
-    },
     //The payload is an anecdote in json format
     appendAnecdote(state, action) {
       state.push(action.payload);
+    },
+    updateAnecdote(state, action) {
+      return state.map((anecdote) =>
+        anecdote.id === action.payload.id
+          ? action.payload
+          : anecdote
+      );
     },
     //The payload is all anecdotes in the "database"
     setAnecdotes(state, action) {
@@ -30,7 +25,7 @@ const anecdoteSlice = createSlice({
   },
 });
 
-export const { upVoteAnecdote, appendAnecdote, setAnecdotes } =
+export const { updateAnecdote, appendAnecdote, setAnecdotes } =
   anecdoteSlice.actions;
 
 export const initializeAnecdotes = () => {
@@ -44,6 +39,13 @@ export const createAnecdote = (content) => {
   return async (dispatch) => {
     const newNote = await anecdoteService.postOne(content);
     dispatch(appendAnecdote(newNote));
+  };
+};
+
+export const upvoteAnecdote = (id) => {
+  return async (dispatch) => {
+    const upvotedAnecdone = await anecdoteService.putUpvoteById(id);
+    dispatch(updateAnecdote(upvotedAnecdone));
   };
 };
 
