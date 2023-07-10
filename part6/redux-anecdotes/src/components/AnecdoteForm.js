@@ -2,7 +2,6 @@ import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { createAnecdote } from "../reducers/anecdoteReducer";
 import {
-  clearNotification,
   setNotification,
 } from "../reducers/notificationReducer";
 
@@ -14,8 +13,7 @@ const AnecdoteForm = () => {
     event.preventDefault();
     dispatch(createAnecdote(newAnecdoteContent));
     setNewAnecdoteContent("");
-    dispatch(clearNotification());
-    dispatch(setNotification(`you added anecdote: '${newAnecdoteContent}'`));
+    dispatch(setNotification(`you added anecdote: '${newAnecdoteContent}'`, 10000));
   };
 
   const handleOnNewAnecdoteContentChanged = (event) => {
