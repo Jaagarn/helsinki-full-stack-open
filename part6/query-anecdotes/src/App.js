@@ -1,12 +1,11 @@
 import AnecdoteForm from "./components/AnecdoteForm";
 import Notification from "./components/Notification";
-import Anecdote from "./components/Anecdote"
+import Anecdote from "./components/Anecdote";
 
 import { useQuery } from "react-query";
 import { getAnecdotes } from "./services/anecdote";
 
 const App = () => {
-
   const result = useQuery("anecdotes", getAnecdotes, {
     retry: 1,
   });
@@ -32,7 +31,7 @@ const App = () => {
 
       {anecdotes.map((anecdote) => (
         <div key={anecdote.id}>
-          <Anecdote anecdote={anecdote}/>
+          <Anecdote anecdote={anecdote} />
         </div>
       ))}
     </div>

@@ -1,11 +1,21 @@
 import { useMutation, useQueryClient } from "react-query";
 import { postOneAnecdote } from "../services/anecdote";
+import { useNotificationDispatch } from "../reducer/notificationContext";
 
 const AnecdoteForm = () => {
   const queryClient = useQueryClient();
+  const notificationDispatch = useNotificationDispatch();
+
   const newAnecdoteMutation = useMutation(postOneAnecdote, {
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries("anecdotes");
+      notificationDispatch({
+        type: "SET",
+        payload: `You added anecdote "${data.content}"!`,
+      });
+    },
+    onError: (error) => {
+      notificationDispatch({ type: "SET", payload: `Error encountered when trying to create a new anecdote: "${error.message}". Specific error if available: "${error.response.data.error}"` });
     },
   });
 
